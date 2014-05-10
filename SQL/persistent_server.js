@@ -75,13 +75,46 @@ exports.insertMessage = function(message, userId, roomId, success) {
   });
 };
 
-
 exports.insertRoom = function(roomname, callback){
   dbConnection.query('INSERT into chat.rooms values ("' + roomname + '", null);',function(err,rows){
     if(err){
       console.error(err);
     } else {
       callback(rows.insertId);
+    }
+  });
+};
+
+exports.getUserName = function(userId, callback){
+  console.log('getting user name');
+  dbConnection.query('SELECT username from chat.users where userId = ' + userId + ';', function(err,rows){
+    if (err){
+      console.error(err);
+    } else {
+      // rows[0].username is a specific username
+      callback(rows[0].username);
+    }
+  });
+};
+
+exports.getRooms = function(callback){
+  dbConnection.query('SELECT * from chat.rooms;', function(err,rows){
+    if (err){
+      console.error(err);
+    } else {
+      // Rows is array of objects with roomname and roomId
+      callback(rows);
+    }
+  });
+};
+
+exports.getMessages = function(callback){
+  dbConnection.query('SELECT * from chat.messages;', function(err,rows){
+    if (err) {
+      console.error(err);
+    } else {
+      // Rows is array of objects with all message properties
+      callback(rows);
     }
   });
 };
