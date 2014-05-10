@@ -1,12 +1,30 @@
+DROP DATABASE chat;
 CREATE DATABASE chat;
 
 USE chat;
 
 CREATE TABLE messages (
- /* Describe your table here.*/
+  text VARCHAR (140),
+  messageId INT NOT NULL AUTO_INCREMENT,
+  createdAt INT,
+  userId INT,
+  roomId INT,
+  PRIMARY KEY (messageId)
 );
 
-/* You can also create more tables, if you need them... */
+CREATE TABLE rooms (
+  roomname VARCHAR (20),
+  roomId INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (roomId),
+  UNIQUE KEY (roomname)
+);
+
+CREATE TABLE users (
+  username VARCHAR (20),
+  userId INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (userId),
+  UNIQUE KEY (username)
+);
 
 /*  Execute this file from the command line by typing:
  *    mysql < schema.sql
