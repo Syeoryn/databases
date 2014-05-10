@@ -47,7 +47,8 @@ exports.insertUser = function(username, success) {
       console.error('Error at insert user ' + err);
     } else {
       // rows.insertId is the inserted id !!
-      success(rows);
+      console.log(rows);
+      success(rows.insertId);
     }
   });
 };
@@ -65,16 +66,13 @@ exports.insertMessage = function(message, userId, roomId, success) {
   });
 };
 
-exports.insertUser('Drew', function(result){
-  console.log(result);
-});
 
-
-
-// dbConnection.query('SELECT * from chat.rooms',function(err,rows,fields){
-//   console.log('rows: ',rows);
-
-// });
-
-
-
+exports.insertRoom = function(roomname, callback){
+  dbConnection.query('INSERT into chat.rooms values ("' + roomname + '", null);',function(err,rows){
+    if(err){
+      console.error(err);
+    } else {
+      callback(rows.insertId);
+    }
+  });
+};
