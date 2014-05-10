@@ -47,20 +47,27 @@ var postToCollection = function (collectionName, query, callback) {
   // every time we make a GET request.
   // collection.unshift(JSON.parse(query));
 
-  console.log('query: ',query)
-
   if (collectionName === 'rooms') {
     //insert the room
-    console.log(JSON.parse(query).name);
     dbhelpers.insertRoom(JSON.parse(query).name,function(){
       console.log('Room added.');
     });
   } else if (collectionName === 'messages') {
     //insert the message
+    query = JSON.parse(query);
+    var username = query.username;
+    var roomname = query.roomname;
+    var text = query.text;
+    dbhelpers.getUserId(username,function(userId){
+      console.log('userId: ',userId)
+      dbhelpers.getRoomId(roomname,function(roomId){
+        console.log('roomId: ', roomId)
+        dbhelpers.insertMessage(text,userId,roomId,function(){
+          console.log('Message sent!');
+        });
+      });
+    });
   }
-
-
-
   // Dole out the right response code.
   callback("Messages Received.", 201);
 };

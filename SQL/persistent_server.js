@@ -26,7 +26,12 @@ exports.getUserId = function(username,success){
     if (err) {
       console.error('Error at getUserId ' + err);
     } else {
-      success(rows[0]);
+      if(rows[0] === undefined){
+        console.log('Creating user.');
+        exports.insertUser(username,success);
+      } else {
+        success(rows[0].userId);
+      }
     }
   });
 };
@@ -34,9 +39,9 @@ exports.getUserId = function(username,success){
 exports.getRoomId = function(roomname, success) {
   dbConnection.query('SELECT roomId from chat.rooms where roomname = "' + roomname + '"', function(err, rows){
     if (err) {
-      console.error('Error at getRoomid ' + err);
+      console.error('Error at getRoomId ' + err);
     } else {
-      success(rows[0]);
+      success(rows[0].roomId);
     }
   });
 };
@@ -48,14 +53,18 @@ exports.insertUser = function(username, success) {
     } else {
       // rows.insertId is the inserted id !!
       console.log(rows);
-      success(rows.insertId);
+      console.log('User added.');
+      success(rows.insertId.userId);
     }
   });
 };
 
 exports.insertMessage = function(message, userId, roomId, success) {
-  var createdAt = (new Date()).getTime();
-  var query = JSON.stringify('INSERT into chat.messages values("' + message + '",null,"' + createdAt + '","' + userId + '","' + roomId + '");');
+  var createdAt = (new Date()).toISOString();
+
+  // createdAt /= 10000;
+  var query = 'INSERT into chat.messages values("' + message + '",null,"' + createdAt + '","' + userId + '","' + roomId + '");';
+  console.log(query);
   dbConnection.query(query,function(err,rows){
     if(err){
       console.error(err);
